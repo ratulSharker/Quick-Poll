@@ -1,4 +1,4 @@
-package com.funlab.quickpoll;
+package com.funlab.quickpoll.configuration;
 
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;

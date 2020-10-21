@@ -1,4 +1,4 @@
-package com.funlab.quickpoll;
+package com.funlab.quickpoll.configuration;
 
 import java.time.LocalDate;
 
