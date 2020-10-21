@@ -5,6 +5,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 @Entity
 public class Option {
@@ -16,6 +18,13 @@ public class Option {
 
 	@Column(name = "OPTION_VALUE")
 	private String value;
+	
+	@ManyToOne
+	@JoinColumn(name = "POLL_ID")
+	private Poll poll;
+	
+//	@Column(name = "POLL_ID")
+//	private Long pollId;
 
 	public Long getId() {
 		return id;

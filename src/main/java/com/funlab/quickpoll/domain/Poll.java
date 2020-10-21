@@ -15,6 +15,7 @@ import javax.persistence.OrderBy;
 @Entity
 public class Poll {
 
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "POLL_ID")
