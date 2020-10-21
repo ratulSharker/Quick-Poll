@@ -17,6 +17,7 @@ public class QuickPollApplication {
 		rbms.addBasenames("message");
 		rbms.addBasenames("application");
 		rbms.setUseCodeAsDefaultMessage(true);
+		rbms.setDefaultEncoding("UTF-8");
 		return rbms;
 	}
 	

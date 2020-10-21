@@ -2,6 +2,7 @@ package com.funlab.quickpoll.exception;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -27,10 +28,11 @@ public class RestExceptionHandler {
 	public ResponseEntity<?> handleResourceNotFound(ResourceNotFoundException rnfe, HttpServletRequest req) {
 		ApiResponse<?> response = new ApiResponse<>();
 		
+		Locale reqLocale = this.getRequestLocale(req);
+		
 		Map<String, Object> meta = new HashMap<>();
 		meta.put("timestamp", new Date().getTime());
-		meta.put("message", messageSource.getMessage("ResourceNotFoundError", null, null));
-//		meta.put("message", messageSource.getMessage("hello", null, null));
+		meta.put("message", messageSource.getMessage("ResourceNotFoundError", null, reqLocale));
 		meta.put("dev-msg", rnfe.getClass().getName());
 		meta.put("path", req.getRequestURI());
 		
@@ -42,11 +44,13 @@ public class RestExceptionHandler {
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public ResponseEntity<?> handleValidationError(MethodArgumentNotValidException manve, HttpServletRequest req) {
 		ApiResponse<?> response = new ApiResponse<>();
+
+		Locale reqLocale = this.getRequestLocale(req);
 		
 		Map<String, Object> meta = new HashMap<>();
 		meta.put("timestamp", new Date().getTime());
 		meta.put("path", req.getRequestURI());
-		meta.put("message", messageSource.getMessage("ValidationError", null, null));
+		meta.put("message", messageSource.getMessage("ValidationError", null, reqLocale));
 		
 		StringBuilder stringBuilder = new StringBuilder();
 		for (FieldError fieldError : manve.getBindingResult().getFieldErrors()) {
@@ -56,5 +60,9 @@ public class RestExceptionHandler {
 		
 		response.setMeta(meta);
 		return new ResponseEntity(response, HttpStatus.BAD_REQUEST);
+	}
+	
+	private Locale getRequestLocale(HttpServletRequest req) {
+		return new Locale.Builder().setLanguage(req.getHeader("Accept-Language")).build();
 	}
 }
