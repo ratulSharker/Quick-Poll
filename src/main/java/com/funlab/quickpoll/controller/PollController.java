@@ -1,8 +1,12 @@
 package com.funlab.quickpoll.controller;
 
 import java.net.URI;
+import java.util.HashSet;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.Set;
+
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -15,9 +19,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.funlab.quickpoll.domain.Option;
 import com.funlab.quickpoll.domain.Poll;
-import com.funlab.quickpoll.repositoy.PollRepository;
+import com.funlab.quickpoll.dto.OptionDTO;
+import com.funlab.quickpoll.dto.PollDTO;
 import com.funlab.quickpoll.exception.ResourceNotFoundException;
+import com.funlab.quickpoll.repositoy.PollRepository;
 
 @RestController
 public class PollController {
@@ -31,7 +38,20 @@ public class PollController {
 	}
 
 	@RequestMapping(value = "/polls", method = RequestMethod.POST)
-	public ResponseEntity<Poll> createPoll(@RequestBody Poll poll) {
+	public ResponseEntity<Poll> createPoll(@Valid @RequestBody PollDTO pollDTO) {
+		
+		Poll poll = new Poll();
+		poll.setQuestion(pollDTO.getQuestion());
+		
+		Set<Option> options = new HashSet<Option>();
+		for (OptionDTO optionDTO : pollDTO.getOptions()) {
+			Option option = new Option();
+			option.setId(optionDTO.getId());
+			option.setValue(optionDTO.getValue());
+			options.add(option);
+		}
+		poll.setOptions(options);
+		
 		poll = this.pollRepository.save(poll);
 
 		HttpHeaders responseHeaders = new HttpHeaders();
