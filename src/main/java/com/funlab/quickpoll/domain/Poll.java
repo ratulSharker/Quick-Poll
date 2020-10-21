@@ -2,6 +2,7 @@ package com.funlab.quickpoll.domain;
 
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -21,7 +22,7 @@ public class Poll {
 	@Column(name = "QUESTION")
 	private String question;
 
-	@OneToMany
+	@OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(name = "POLL_ID")
 	@OrderBy
 	private Set<Option> options;
