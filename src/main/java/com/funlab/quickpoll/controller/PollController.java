@@ -26,12 +26,16 @@ import com.funlab.quickpoll.dto.PollDTO;
 import com.funlab.quickpoll.exception.ResourceNotFoundException;
 import com.funlab.quickpoll.repositoy.PollRepository;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+
 @RestController
 public class PollController {
 
 	@Autowired
 	private PollRepository pollRepository;
 
+	@ApiOperation(value = "Get all available polls")
 	@RequestMapping(value = "/polls", method = RequestMethod.GET)
 	public ResponseEntity<Iterable<Poll>> getAllPolls() {
 		return new ResponseEntity<Iterable<Poll>>(this.pollRepository.findAll(), HttpStatus.OK);
