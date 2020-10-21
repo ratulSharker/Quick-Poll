@@ -17,6 +17,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.funlab.quickpoll.domain.Poll;
 import com.funlab.quickpoll.repositoy.PollRepository;
+import com.funlab.quickpoll.exception.ResourceNotFoundException;
 
 @RestController
 public class PollController {
@@ -43,17 +44,12 @@ public class PollController {
 	@RequestMapping(value = "/polls/{id}", method = RequestMethod.GET)
 	public ResponseEntity<Poll> getPoll(@PathVariable("id") Long pollId) {
 
-		try {
-			Optional<Poll> nullablePoll = this.pollRepository.findById(pollId);
-			return new ResponseEntity<Poll>(nullablePoll.get(), HttpStatus.OK);
-		} catch (NoSuchElementException ex) {
-			return new ResponseEntity(null, HttpStatus.NOT_FOUND);
-		}
+		return new ResponseEntity<>(verifyAndGetPoll(pollId), HttpStatus.OK);
 	}
-	
-	
+
 	@RequestMapping(value = "/polls/{id}", method = RequestMethod.PUT)
 	public ResponseEntity<Poll> updatePoll(@PathVariable("id") Long pollId, @RequestBody Poll poll) {
+		verifyAndGetPoll(pollId);
 		poll.setId(pollId);
 		poll = this.pollRepository.save(poll);
 		return new ResponseEntity<Poll>(poll, HttpStatus.OK);
@@ -61,8 +57,18 @@ public class PollController {
 
 	@RequestMapping(value = "/polls/{id}", method = RequestMethod.DELETE)
 	public ResponseEntity<?> deletePoll(@PathVariable("id") Long pollId) {
+		verifyAndGetPoll(pollId);
 		this.pollRepository.deleteById(pollId);
 		return new ResponseEntity(HttpStatus.OK);
+	}
+
+	private Poll verifyAndGetPoll(Long pollId) throws ResourceNotFoundException {
+		try {
+			Optional<Poll> nullablePoll = this.pollRepository.findById(pollId);
+			return nullablePoll.get();
+		} catch (NoSuchElementException ex) {
+			throw new ResourceNotFoundException(ex.getMessage());
+		}
 	}
 
 }
