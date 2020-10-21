@@ -6,6 +6,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -17,6 +19,9 @@ import com.funlab.quickpoll.dto.ApiResponse;
 
 @ControllerAdvice
 public class RestExceptionHandler {
+	
+	@Autowired
+	private MessageSource messageSource;
 
 	@ExceptionHandler(ResourceNotFoundException.class)
 	public ResponseEntity<?> handleResourceNotFound(ResourceNotFoundException rnfe, HttpServletRequest req) {
@@ -24,7 +29,8 @@ public class RestExceptionHandler {
 		
 		Map<String, Object> meta = new HashMap<>();
 		meta.put("timestamp", new Date().getTime());
-		meta.put("message", "Resource not found");
+		meta.put("message", messageSource.getMessage("ResourceNotFoundError", null, null));
+//		meta.put("message", messageSource.getMessage("hello", null, null));
 		meta.put("dev-msg", rnfe.getClass().getName());
 		meta.put("path", req.getRequestURI());
 		
@@ -40,7 +46,7 @@ public class RestExceptionHandler {
 		Map<String, Object> meta = new HashMap<>();
 		meta.put("timestamp", new Date().getTime());
 		meta.put("path", req.getRequestURI());
-		meta.put("message", "Input validation failed");
+		meta.put("message", messageSource.getMessage("ValidationError", null, null));
 		
 		StringBuilder stringBuilder = new StringBuilder();
 		for (FieldError fieldError : manve.getBindingResult().getFieldErrors()) {
