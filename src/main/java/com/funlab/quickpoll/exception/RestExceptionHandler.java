@@ -20,49 +20,43 @@ import com.funlab.quickpoll.dto.ApiResponse;
 
 @ControllerAdvice
 public class RestExceptionHandler {
-	
+
 	@Autowired
 	private MessageSource messageSource;
 
 	@ExceptionHandler(ResourceNotFoundException.class)
 	public ResponseEntity<?> handleResourceNotFound(ResourceNotFoundException rnfe, HttpServletRequest req) {
 		ApiResponse<?> response = new ApiResponse<>();
-		
-		Locale reqLocale = this.getRequestLocale(req);
-		
+
+
 		Map<String, Object> meta = new HashMap<>();
 		meta.put("timestamp", new Date().getTime());
-		meta.put("message", messageSource.getMessage("ResourceNotFoundError", null, reqLocale));
+		meta.put("message", messageSource.getMessage("ResourceNotFoundError", null, req.getLocale()));
 		meta.put("dev-msg", rnfe.getClass().getName());
 		meta.put("path", req.getRequestURI());
-		
+
 		response.setMeta(meta);
-		
-		return new ResponseEntity(response, HttpStatus.NOT_FOUND);	
+
+		return new ResponseEntity(response, HttpStatus.NOT_FOUND);
 	}
-	
+
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public ResponseEntity<?> handleValidationError(MethodArgumentNotValidException manve, HttpServletRequest req) {
 		ApiResponse<?> response = new ApiResponse<>();
 
-		Locale reqLocale = this.getRequestLocale(req);
-		
+
 		Map<String, Object> meta = new HashMap<>();
 		meta.put("timestamp", new Date().getTime());
 		meta.put("path", req.getRequestURI());
-		meta.put("message", messageSource.getMessage("ValidationError", null, reqLocale));
-		
+		meta.put("message", messageSource.getMessage("ValidationError", null, req.getLocale()));
+
 		StringBuilder stringBuilder = new StringBuilder();
 		for (FieldError fieldError : manve.getBindingResult().getFieldErrors()) {
 			stringBuilder.append("`" + fieldError.getField() + "` " + fieldError.getDefaultMessage() + ";");
 		}
 		meta.put("dev-msg", stringBuilder.toString());
-		
+
 		response.setMeta(meta);
 		return new ResponseEntity(response, HttpStatus.BAD_REQUEST);
-	}
-	
-	private Locale getRequestLocale(HttpServletRequest req) {
-		return new Locale.Builder().setLanguage(req.getHeader("Accept-Language")).build();
 	}
 }
