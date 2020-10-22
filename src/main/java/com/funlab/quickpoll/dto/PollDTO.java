@@ -7,6 +7,11 @@ import javax.validation.constraints.Size;
 
 import com.sun.istack.NotNull;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class PollDTO {
 
 	@NotEmpty
@@ -15,32 +20,5 @@ public class PollDTO {
 
 	@Size(min = 2, max = 5)
 	private Set<OptionDTO> options;
-
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	public String getQuestion() {
-		return question;
-	}
-
-	public void setQuestion(String question) {
-		this.question = question;
-	}
-
-	public Set<OptionDTO> getOptions() {
-		return options;
-	}
-
-	public void setOptions(Set<OptionDTO> options) {
-		this.options = options;
-	}
 
 }
