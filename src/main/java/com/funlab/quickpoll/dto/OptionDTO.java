@@ -4,6 +4,11 @@ import javax.validation.constraints.NotEmpty;
 
 import com.sun.istack.NotNull;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class OptionDTO {
 
 	@NotNull
@@ -12,19 +17,4 @@ public class OptionDTO {
 	@NotEmpty
 	private String value;
 
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getValue() {
-		return value;
-	}
-
-	public void setValue(String value) {
-		this.value = value;
-	}
 }
