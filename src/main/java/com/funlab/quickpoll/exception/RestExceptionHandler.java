@@ -2,7 +2,6 @@ package com.funlab.quickpoll.exception;
 
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,7 +15,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import com.funlab.quickpoll.dto.ApiResponse;
+import com.funlab.quickpoll.dto.CustomApiResponse;
 
 @ControllerAdvice
 public class RestExceptionHandler {
@@ -26,7 +25,7 @@ public class RestExceptionHandler {
 
 	@ExceptionHandler(ResourceNotFoundException.class)
 	public ResponseEntity<?> handleResourceNotFound(ResourceNotFoundException rnfe, HttpServletRequest req) {
-		ApiResponse<?> response = new ApiResponse<>();
+		CustomApiResponse<?> response = new CustomApiResponse<>();
 
 
 		Map<String, Object> meta = new HashMap<>();
@@ -37,12 +36,12 @@ public class RestExceptionHandler {
 
 		response.setMeta(meta);
 
-		return new ResponseEntity(response, HttpStatus.NOT_FOUND);
+		return new ResponseEntity<CustomApiResponse<?>>(response, HttpStatus.NOT_FOUND);
 	}
 
 	@ExceptionHandler(MethodArgumentNotValidException.class)
-	public ResponseEntity<?> handleValidationError(MethodArgumentNotValidException manve, HttpServletRequest req) {
-		ApiResponse<?> response = new ApiResponse<>();
+	public ResponseEntity<CustomApiResponse<Void>> handleValidationError(MethodArgumentNotValidException manve, HttpServletRequest req) {
+		CustomApiResponse<Void> response = new CustomApiResponse<>();
 
 
 		Map<String, Object> meta = new HashMap<>();
@@ -57,6 +56,6 @@ public class RestExceptionHandler {
 		meta.put("dev-msg", stringBuilder.toString());
 
 		response.setMeta(meta);
-		return new ResponseEntity(response, HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<CustomApiResponse<Void>>(response, HttpStatus.BAD_REQUEST);
 	}
 }
