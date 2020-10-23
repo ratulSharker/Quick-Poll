@@ -1,14 +1,19 @@
 package com.funlab.quickpoll.controller;
 
 import java.net.URI;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +26,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.funlab.quickpoll.domain.Option;
 import com.funlab.quickpoll.domain.Poll;
+import com.funlab.quickpoll.dto.CustomApiResponse;
 import com.funlab.quickpoll.dto.OptionDTO;
 import com.funlab.quickpoll.dto.PollDTO;
 import com.funlab.quickpoll.exception.ResourceNotFoundException;
@@ -38,19 +44,21 @@ public class PollController {
 	@Autowired
 	private PollRepository pollRepository;
 
+	@Autowired
+	private MessageSource messageSource;
+
 	@ApiOperation(value = "Get all available polls")
 	@ApiResponses(value = { 
 			@ApiResponse(code = 200, message = "Polls fetched", response = Poll.class)
 	})
 	@RequestMapping(value = "/polls", method = RequestMethod.GET)
-	
 	public ResponseEntity<Iterable<Poll>> getAllPolls() {
 		return new ResponseEntity<Iterable<Poll>>(this.pollRepository.findAll(), HttpStatus.OK);
 	}
 
 	@ApiOperation(value = "Create a new poll", notes = "It will return the newly created poll and set the response header location to newly created poll", response = Poll.class)
 	@RequestMapping(value = "/polls", method = RequestMethod.POST)
-	public ResponseEntity<Poll> createPoll(@Valid @RequestBody PollDTO pollDTO) {
+	public ResponseEntity<CustomApiResponse<Poll>> createPoll(@Valid @RequestBody PollDTO pollDTO, HttpServletRequest req) {
 		
 		Poll poll = new Poll();
 		poll.setQuestion(pollDTO.getQuestion());
@@ -70,7 +78,17 @@ public class PollController {
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(poll.getId()).toUri();
 		responseHeaders.setLocation(uri);
 
-		return new ResponseEntity<Poll>(poll, responseHeaders, HttpStatus.CREATED);
+		CustomApiResponse<Poll> response = new CustomApiResponse<Poll>();
+		response.setData(poll);
+
+		Map<String, Object> meta = new HashMap<String, Object>();
+		meta.put("timestamp", new Date().getTime());
+		meta.put("message", messageSource.getMessage("PollCreatedSuccessfully", null, req.getLocale()));
+		response.setMeta(meta);
+
+
+
+		return new ResponseEntity<CustomApiResponse<Poll> >(response, responseHeaders, HttpStatus.CREATED);
 	}
 
 	
@@ -94,10 +112,10 @@ public class PollController {
 
 	@ApiOperation(value = "Delete a particular poll")
 	@RequestMapping(value = "/polls/{id}", method = RequestMethod.DELETE)
-	public ResponseEntity<?> deletePoll(@PathVariable("id") Long pollId) {
+	public ResponseEntity<Void> deletePoll(@PathVariable("id") Long pollId) {
 		verifyAndGetPoll(pollId);
 		this.pollRepository.deleteById(pollId);
-		return new ResponseEntity(HttpStatus.OK);
+		return new ResponseEntity<Void>(HttpStatus.OK);
 	}
 
 	private Poll verifyAndGetPoll(Long pollId) throws ResourceNotFoundException {

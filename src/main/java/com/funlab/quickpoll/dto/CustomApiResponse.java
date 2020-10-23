@@ -7,7 +7,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ApiResponse<T> {
+public class CustomApiResponse<T> {
 
 	private Map<String, Object> meta;
 	private T data;

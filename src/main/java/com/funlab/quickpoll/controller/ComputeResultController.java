@@ -1,7 +1,6 @@
 package com.funlab.quickpoll.controller;
 
 import java.util.HashMap;
-import java.util.Iterator;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
