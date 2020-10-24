@@ -16,27 +16,27 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 public class SwaggerConfiguration {
 
 	@Bean
-	public Docket petApi() {
-		return new Docket(DocumentationType.SWAGGER_2)
-				.apiInfo(apiInfo())
-				.select()
-				.apis(RequestHandlerSelectors.any())
-				.paths((String input) -> {
-					return input.startsWith("/error") == false;
-				})
-				.build();
+	public Docket v1ApiConfiguration() {
+		return new Docket(DocumentationType.SWAGGER_2).groupName("Version 1").apiInfo(apiInfo("v1")).select()
+				.apis(RequestHandlerSelectors.any()).paths((String input) -> {
+					return input.startsWith("/error") == false && input.startsWith("/v1/");
+				}).build();
 	}
-	
-	private ApiInfo apiInfo() {
-		return new ApiInfoBuilder()
-				.title("QuickPoll REST API")
+
+	@Bean
+	public Docket v2ApiConfiguration() {
+		return new Docket(DocumentationType.SWAGGER_2).groupName("Version 2").apiInfo(apiInfo("v2")).select()
+				.apis(RequestHandlerSelectors.any()).paths((String input) -> {
+					return input.startsWith("/error") == false && input.startsWith("/v2/");
+				}).build();
+	}
+
+	private ApiInfo apiInfo(String version) {
+		return new ApiInfoBuilder().title("QuickPoll REST API")
 				.description("QuickPoll Api for creating and managing polls")
-				.termsOfServiceUrl("https://www.google.com")
-				.license("MIT License")
+				.termsOfServiceUrl("https://www.google.com").license("MIT License")
 				.contact(new Contact("Ratul", "https://www.ratul.me", "sharker.ratul.08@gmail.com"))
-				.licenseUrl("http://opensource.org/licenses/MIT")
-				.version("v1.2.3")
-				.build();
+				.licenseUrl("http://opensource.org/licenses/MIT").version(version).build();
 	}
 
 }
