@@ -5,8 +5,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -24,12 +22,12 @@ public class Option {
 	@Column(name = "OPTION_VALUE")
 	private String value;
 	
-	@ManyToOne
-	@JoinColumn(name = "POLL_ID")
-	private Poll poll;
+	// @ManyToOne
+	// @JoinColumn(name = "POLL_ID")
+	// private Poll poll;
 	
-//	@Column(name = "POLL_ID")
-//	private Long pollId;
+	@Column(name = "POLL_ID")
+	private Long pollId;
 
 	@Override
 	public String toString() {

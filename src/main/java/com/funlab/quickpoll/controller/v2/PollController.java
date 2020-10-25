@@ -1,4 +1,4 @@
-package com.funlab.quickpoll.controller;
+package com.funlab.quickpoll.controller.v2;
 
 import java.net.URI;
 import java.util.Date;
@@ -37,7 +37,8 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
-@RestController
+@RestController(value = "PollControllerV2")
+@RequestMapping("/v2/")
 @Api(value = "polls", description = "Poll API")
 public class PollController {
 
@@ -94,9 +95,19 @@ public class PollController {
 	
 	@ApiOperation(value = "Get poll by id", response = Poll.class)
 	@RequestMapping(value = "/polls/{id}", method = RequestMethod.GET)
-	public ResponseEntity<Poll> getPoll(@PathVariable("id") Long pollId) {
+	public ResponseEntity<CustomApiResponse<?>> getPoll(@PathVariable("id") Long pollId, HttpServletRequest req) {
+		Poll poll = verifyAndGetPoll(pollId);
 
-		return new ResponseEntity<>(verifyAndGetPoll(pollId), HttpStatus.OK);
+		CustomApiResponse<Poll> response = new CustomApiResponse<Poll>();
+
+		response.setData(poll);
+
+		Map<String, Object> meta = new HashMap<>();
+		meta.put("timestamp", new Date().getTime());
+		meta.put("message", this.messageSource.getMessage("PollFetched", null, req.getLocale()));
+		response.setMeta(meta);
+		
+		return new ResponseEntity<CustomApiResponse<?>>(response, HttpStatus.OK);
 	}
 
 	

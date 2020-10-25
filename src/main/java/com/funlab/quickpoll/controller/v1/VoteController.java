@@ -1,4 +1,4 @@
-package com.funlab.quickpoll.controller;
+package com.funlab.quickpoll.controller.v1;
 
 import java.net.URI;
 
@@ -16,7 +16,8 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import com.funlab.quickpoll.domain.Vote;
 import com.funlab.quickpoll.repositoy.VoteRepository;
 
-@RestController
+@RestController(value = "VoteControllerV1")
+@RequestMapping("/v1/")
 public class VoteController {
 
 	@Autowired

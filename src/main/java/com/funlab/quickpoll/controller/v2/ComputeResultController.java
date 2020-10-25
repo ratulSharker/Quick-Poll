@@ -1,4 +1,4 @@
-package com.funlab.quickpoll.controller;
+package com.funlab.quickpoll.controller.v2;
 
 import java.util.HashMap;
 
@@ -15,7 +15,9 @@ import com.funlab.quickpoll.dto.OptionCount;
 import com.funlab.quickpoll.dto.VoteResult;
 import com.funlab.quickpoll.repositoy.VoteRepository;
 
-@RestController
+
+@RestController(value = "ComputeResultControllerV2")
+@RequestMapping("/v2/")
 public class ComputeResultController {
 
 	@Autowired
