@@ -14,6 +14,8 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -53,8 +55,8 @@ public class PollController {
 			@ApiResponse(code = 200, message = "Polls fetched", response = Poll.class)
 	})
 	@RequestMapping(value = "/polls", method = RequestMethod.GET)
-	public ResponseEntity<Iterable<Poll>> getAllPolls() {
-		return new ResponseEntity<Iterable<Poll>>(this.pollRepository.findAll(), HttpStatus.OK);
+	public ResponseEntity<Page<Poll>> getAllPolls(Pageable pageable) { 
+		return new ResponseEntity<Page<Poll>>(this.pollRepository.findAll(pageable), HttpStatus.OK);
 	}
 
 	@ApiOperation(value = "Create a new poll", notes = "It will return the newly created poll and set the response header location to newly created poll", response = Poll.class)
