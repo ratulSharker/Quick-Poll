@@ -1,10 +1,6 @@
 package com.funlab.quickpoll.controller.v1;
 
-import java.util.HashMap;
-
-import com.funlab.quickpoll.dto.VoteCount;
 import com.funlab.quickpoll.dto.VoteResult;
-import com.funlab.quickpoll.entity.Vote;
 import com.funlab.quickpoll.service.VoteService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-
 @RestController(value = "ComputeResultControllerV1")
 @RequestMapping("/v1/")
 public class ComputeResultController {
@@ -25,35 +20,8 @@ public class ComputeResultController {
 
 	@RequestMapping(value = "/polls/{pollId}/computeresult", method = RequestMethod.GET)
 	public ResponseEntity<VoteResult> computeResult(@PathVariable Long pollId) {
-
-		VoteResult result = new VoteResult();
-
-		Iterable<Vote> votes = voteService.findByPoll(pollId);
-
-		Long totalCount = 0L;
-		final HashMap<Long, VoteCount> optionIdWiseVoteCount = new HashMap<>();
-
-		for (Vote vote : votes) {
-			totalCount++;
-			VoteCount optionCount = optionIdWiseVoteCount.get(vote.getOption().getId());
-
-			if (optionCount == null) {
-				optionCount = new VoteCount();
-
-				optionCount.setCount(1L);
-				optionCount.setOptionId(vote.getOption().getId());
-
-				optionIdWiseVoteCount.put(vote.getOption().getId(), optionCount);
-			} else {
-				optionCount.incrementCount();
-			}
-		}
-
-		result.setTotalVotes(totalCount);
-		result.setResult(optionIdWiseVoteCount.values());
-
+		VoteResult result = voteService.computeResult(pollId);
 		return new ResponseEntity<VoteResult>(result, HttpStatus.OK);
-
 	}
 
 }
