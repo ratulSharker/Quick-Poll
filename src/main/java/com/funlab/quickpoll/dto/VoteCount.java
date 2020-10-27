@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class OptionCount {
+public class VoteCount {
 
 	private Long optionId;
 	private Long count;

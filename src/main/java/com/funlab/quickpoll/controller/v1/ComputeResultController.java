@@ -2,7 +2,7 @@ package com.funlab.quickpoll.controller.v1;
 
 import java.util.HashMap;
 
-import com.funlab.quickpoll.dto.OptionCount;
+import com.funlab.quickpoll.dto.VoteCount;
 import com.funlab.quickpoll.dto.VoteResult;
 import com.funlab.quickpoll.entity.Vote;
 import com.funlab.quickpoll.service.VoteService;
@@ -31,26 +31,26 @@ public class ComputeResultController {
 		Iterable<Vote> votes = voteService.findByPoll(pollId);
 
 		Long totalCount = 0L;
-		final HashMap<Long, OptionCount> optionIdWiseOptionCount = new HashMap<>();
+		final HashMap<Long, VoteCount> optionIdWiseVoteCount = new HashMap<>();
 
 		for (Vote vote : votes) {
 			totalCount++;
-			OptionCount optionCount = optionIdWiseOptionCount.get(vote.getOption().getId());
+			VoteCount optionCount = optionIdWiseVoteCount.get(vote.getOption().getId());
 
 			if (optionCount == null) {
-				optionCount = new OptionCount();
+				optionCount = new VoteCount();
 
 				optionCount.setCount(1L);
 				optionCount.setOptionId(vote.getOption().getId());
 
-				optionIdWiseOptionCount.put(vote.getOption().getId(), optionCount);
+				optionIdWiseVoteCount.put(vote.getOption().getId(), optionCount);
+			} else {
+				optionCount.incrementCount();
 			}
-
-			optionCount.incrementCount();
 		}
 
 		result.setTotalVotes(totalCount);
-		result.setResult(optionIdWiseOptionCount.values());
+		result.setResult(optionIdWiseVoteCount.values());
 
 		return new ResponseEntity<VoteResult>(result, HttpStatus.OK);
 
