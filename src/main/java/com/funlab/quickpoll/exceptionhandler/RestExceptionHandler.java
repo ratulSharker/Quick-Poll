@@ -1,4 +1,4 @@
-package com.funlab.quickpoll.exception;
+package com.funlab.quickpoll.exceptionhandler;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.funlab.quickpoll.dto.CustomApiResponse;
+import com.funlab.quickpoll.exception.ResourceNotFoundException;
 
 @ControllerAdvice
 public class RestExceptionHandler {

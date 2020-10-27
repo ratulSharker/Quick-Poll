@@ -2,6 +2,11 @@ package com.funlab.quickpoll.controller.v2;
 
 import java.util.HashMap;
 
+import com.funlab.quickpoll.domain.Vote;
+import com.funlab.quickpoll.dto.OptionCount;
+import com.funlab.quickpoll.dto.VoteResult;
+import com.funlab.quickpoll.service.VoteService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,25 +15,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.funlab.quickpoll.domain.Vote;
-import com.funlab.quickpoll.dto.OptionCount;
-import com.funlab.quickpoll.dto.VoteResult;
-import com.funlab.quickpoll.repositoy.VoteRepository;
-
 
 @RestController(value = "ComputeResultControllerV2")
 @RequestMapping("/v2/")
 public class ComputeResultController {
 
+
 	@Autowired
-	private VoteRepository voteRepository;
+	private VoteService voteService;
 
 	@RequestMapping(value = "/polls/{pollId}/computeresult", method = RequestMethod.GET)
 	public ResponseEntity<VoteResult> computeResult(@PathVariable Long pollId) {
 
 		VoteResult result = new VoteResult();
 
-		Iterable<Vote> votes = this.voteRepository.findByPoll(pollId);
+		Iterable<Vote> votes = voteService.findByPoll(pollId);
 
 		Long totalCount = 0L;
 		final HashMap<Long, OptionCount> optionIdWiseOptionCount = new HashMap<>();

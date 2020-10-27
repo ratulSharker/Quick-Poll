@@ -2,6 +2,9 @@ package com.funlab.quickpoll.controller.v2;
 
 import java.net.URI;
 
+import com.funlab.quickpoll.domain.Vote;
+import com.funlab.quickpoll.service.VoteService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -13,19 +16,16 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.funlab.quickpoll.domain.Vote;
-import com.funlab.quickpoll.repositoy.VoteRepository;
-
 @RestController(value = "VoteControllerV2")
 @RequestMapping("/v2/")
 public class VoteController {
 
 	@Autowired
-	private VoteRepository voteRepository;
+	private VoteService voteService;
 
 	@RequestMapping(value = "/polls/{pollId}/votes", method = RequestMethod.POST)
 	public ResponseEntity<Vote> createVote(@RequestBody Vote vote, @PathVariable Long pollId) {
-		vote = this.voteRepository.save(vote);
+		vote = voteService.save(vote);
 
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(vote.getId()).toUri();
 
@@ -39,7 +39,7 @@ public class VoteController {
 	@RequestMapping(value = "/polls/{pollId}/votes", method = RequestMethod.GET)
 	public ResponseEntity<Iterable<Vote>> getVotesForPoll(@PathVariable Long pollId) {
 
-		Iterable<Vote> votes = this.voteRepository.findByPoll(pollId);
+		Iterable<Vote> votes = voteService.findByPoll(pollId);
 
 		return new ResponseEntity<Iterable<Vote>>(votes, HttpStatus.OK);
 	}

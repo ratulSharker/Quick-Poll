@@ -12,6 +12,14 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import com.funlab.quickpoll.domain.Option;
+import com.funlab.quickpoll.domain.Poll;
+import com.funlab.quickpoll.dto.CustomApiResponse;
+import com.funlab.quickpoll.dto.OptionDTO;
+import com.funlab.quickpoll.dto.PollDTO;
+import com.funlab.quickpoll.exception.ResourceNotFoundException;
+import com.funlab.quickpoll.service.PollService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
@@ -26,14 +34,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.funlab.quickpoll.domain.Option;
-import com.funlab.quickpoll.domain.Poll;
-import com.funlab.quickpoll.dto.CustomApiResponse;
-import com.funlab.quickpoll.dto.OptionDTO;
-import com.funlab.quickpoll.dto.PollDTO;
-import com.funlab.quickpoll.exception.ResourceNotFoundException;
-import com.funlab.quickpoll.repositoy.PollRepository;
-
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -44,8 +44,10 @@ import io.swagger.annotations.ApiResponses;
 @Api(value = "polls", description = "Poll API")
 public class PollController {
 
+	// @Autowired
+	// private PollRepository pollRepository;
 	@Autowired
-	private PollRepository pollRepository;
+	private PollService pollService;
 
 	@Autowired
 	private MessageSource messageSource;
@@ -56,7 +58,7 @@ public class PollController {
 	})
 	@RequestMapping(value = "/polls", method = RequestMethod.GET)
 	public ResponseEntity<Page<Poll>> getAllPolls(Pageable pageable) { 
-		return new ResponseEntity<Page<Poll>>(this.pollRepository.findAll(pageable), HttpStatus.OK);
+		return new ResponseEntity<Page<Poll>>(pollService.findAll(pageable), HttpStatus.OK);
 	}
 
 	@ApiOperation(value = "Create a new poll", notes = "It will return the newly created poll and set the response header location to newly created poll", response = Poll.class)
@@ -75,7 +77,7 @@ public class PollController {
 		}
 		poll.setOptions(options);
 		
-		poll = this.pollRepository.save(poll);
+		poll = pollService.save(poll);
 
 		HttpHeaders responseHeaders = new HttpHeaders();
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(poll.getId()).toUri();
@@ -118,7 +120,7 @@ public class PollController {
 	public ResponseEntity<Poll> updatePoll(@PathVariable("id") Long pollId, @RequestBody Poll poll) {
 		verifyAndGetPoll(pollId);
 		poll.setId(pollId);
-		poll = this.pollRepository.save(poll);
+		poll = pollService.save(poll);
 		return new ResponseEntity<Poll>(poll, HttpStatus.OK);
 	}
 
@@ -127,13 +129,13 @@ public class PollController {
 	@RequestMapping(value = "/polls/{id}", method = RequestMethod.DELETE)
 	public ResponseEntity<Void> deletePoll(@PathVariable("id") Long pollId) {
 		verifyAndGetPoll(pollId);
-		this.pollRepository.deleteById(pollId);
+		pollService.deleteById(pollId);
 		return new ResponseEntity<Void>(HttpStatus.OK);
 	}
 
 	private Poll verifyAndGetPoll(Long pollId) throws ResourceNotFoundException {
 		try {
-			Optional<Poll> nullablePoll = this.pollRepository.findById(pollId);
+			Optional<Poll> nullablePoll = pollService.findById(pollId);
 			return nullablePoll.get();
 		} catch (NoSuchElementException ex) {
 			throw new ResourceNotFoundException(ex.getMessage());
