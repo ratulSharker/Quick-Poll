@@ -4,12 +4,14 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -27,7 +29,6 @@ public class RestExceptionHandler {
 	public ResponseEntity<?> handleResourceNotFound(ResourceNotFoundException rnfe, HttpServletRequest req) {
 		CustomApiResponse<?> response = new CustomApiResponse<>();
 
-
 		Map<String, Object> meta = new HashMap<>();
 		meta.put("timestamp", new Date().getTime());
 		meta.put("message", messageSource.getMessage("ResourceNotFoundError", null, req.getLocale()));
@@ -40,9 +41,9 @@ public class RestExceptionHandler {
 	}
 
 	@ExceptionHandler(MethodArgumentNotValidException.class)
-	public ResponseEntity<CustomApiResponse<Void>> handleValidationError(MethodArgumentNotValidException manve, HttpServletRequest req) {
+	public ResponseEntity<CustomApiResponse<Void>> handleValidationError(MethodArgumentNotValidException manve,
+			HttpServletRequest req) {
 		CustomApiResponse<Void> response = new CustomApiResponse<>();
-
 
 		Map<String, Object> meta = new HashMap<>();
 		meta.put("timestamp", new Date().getTime());
@@ -58,4 +59,21 @@ public class RestExceptionHandler {
 		response.setMeta(meta);
 		return new ResponseEntity<CustomApiResponse<Void>>(response, HttpStatus.BAD_REQUEST);
 	}
+
+	// Investigate why `UsernameNotFoundException` is being caught by the ControllerAdvice
+//	@ExceptionHandler(UsernameNotFoundException.class)
+//	public ResponseEntity<CustomApiResponse<Void>> handleUserNotFound(UsernameNotFoundException unfe,
+//			HttpServletRequest req) {
+//
+//		CustomApiResponse<Void> response = new CustomApiResponse<>();
+//
+//		Map<String, Object> meta = new HashMap<String, Object>();
+//		meta.put("timestamp", new Date().getTime());
+//		meta.put("path", req.getRequestURI());
+//		meta.put("message", unfe.getMessage());
+//
+//		response.setMeta(meta);
+//
+//		return new ResponseEntity<CustomApiResponse<Void>>(response, HttpStatus.BAD_REQUEST);
+//	}
 }
