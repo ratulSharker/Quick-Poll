@@ -1,4 +1,4 @@
-package com.funlab.quickpoll.dto;
+package com.funlab.quickpoll.dto.request;
 
 import javax.validation.constraints.NotEmpty;
 
@@ -9,7 +9,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class OptionDTO {
+public class OptionRequestDTO {
 
 	@NotNull
 	private Long id;

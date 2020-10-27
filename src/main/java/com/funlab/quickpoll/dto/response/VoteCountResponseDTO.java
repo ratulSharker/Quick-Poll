@@ -1,11 +1,11 @@
-package com.funlab.quickpoll.dto;
+package com.funlab.quickpoll.dto.response;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class VoteCount {
+public class VoteCountResponseDTO {
 
 	private Long optionId;
 	private Long count;

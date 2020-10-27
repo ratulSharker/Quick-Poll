@@ -2,8 +2,8 @@ package com.funlab.quickpoll.service.impl;
 
 import java.util.HashMap;
 
-import com.funlab.quickpoll.dto.VoteCount;
-import com.funlab.quickpoll.dto.VoteResult;
+import com.funlab.quickpoll.dto.response.VoteCountResponseDTO;
+import com.funlab.quickpoll.dto.response.VoteResultResponseDTO;
 import com.funlab.quickpoll.entity.Vote;
 import com.funlab.quickpoll.repositoy.VoteRepository;
 import com.funlab.quickpoll.service.VoteService;
@@ -28,20 +28,20 @@ public class VoteServiceImpl implements VoteService {
     }
 
     @Override
-    public VoteResult computeResult(Long pollId) {
-        VoteResult result = new VoteResult();
+    public VoteResultResponseDTO computeResult(Long pollId) {
+        VoteResultResponseDTO result = new VoteResultResponseDTO();
 
 		Iterable<Vote> votes = voteRepository.findByPoll(pollId);
 
 		Long totalCount = 0L;
-		final HashMap<Long, VoteCount> optionIdWiseVoteCount = new HashMap<>();
+		final HashMap<Long, VoteCountResponseDTO> optionIdWiseVoteCount = new HashMap<>();
 
 		for (Vote vote : votes) {
 			totalCount++;
-			VoteCount optionCount = optionIdWiseVoteCount.get(vote.getOption().getId());
+			VoteCountResponseDTO optionCount = optionIdWiseVoteCount.get(vote.getOption().getId());
 
 			if (optionCount == null) {
-				optionCount = new VoteCount();
+				optionCount = new VoteCountResponseDTO();
 
 				optionCount.setCount(1L);
 				optionCount.setOptionId(vote.getOption().getId());

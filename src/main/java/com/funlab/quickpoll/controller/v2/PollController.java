@@ -12,9 +12,9 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
-import com.funlab.quickpoll.dto.CustomApiResponse;
-import com.funlab.quickpoll.dto.OptionDTO;
-import com.funlab.quickpoll.dto.PollDTO;
+import com.funlab.quickpoll.dto.request.OptionRequestDTO;
+import com.funlab.quickpoll.dto.request.PollRequestDTO;
+import com.funlab.quickpoll.dto.response.CustomApiResponse;
 import com.funlab.quickpoll.entity.Option;
 import com.funlab.quickpoll.entity.Poll;
 import com.funlab.quickpoll.exception.ResourceNotFoundException;
@@ -63,13 +63,13 @@ public class PollController {
 
 	@ApiOperation(value = "Create a new poll", notes = "It will return the newly created poll and set the response header location to newly created poll", response = Poll.class)
 	@RequestMapping(value = "/polls", method = RequestMethod.POST)
-	public ResponseEntity<CustomApiResponse<Poll>> createPoll(@Valid @RequestBody PollDTO pollDTO, HttpServletRequest req) {
+	public ResponseEntity<CustomApiResponse<Poll>> createPoll(@Valid @RequestBody PollRequestDTO pollDTO, HttpServletRequest req) {
 		
 		Poll poll = new Poll();
 		poll.setQuestion(pollDTO.getQuestion());
 		
 		Set<Option> options = new HashSet<Option>();
-		for (OptionDTO optionDTO : pollDTO.getOptions()) {
+		for (OptionRequestDTO optionDTO : pollDTO.getOptions()) {
 			Option option = new Option();
 			option.setId(optionDTO.getId());
 			option.setValue(optionDTO.getValue());

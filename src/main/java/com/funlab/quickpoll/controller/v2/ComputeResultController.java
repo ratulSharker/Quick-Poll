@@ -1,6 +1,6 @@
 package com.funlab.quickpoll.controller.v2;
 
-import com.funlab.quickpoll.dto.VoteResult;
+import com.funlab.quickpoll.dto.response.VoteResultResponseDTO;
 import com.funlab.quickpoll.service.VoteService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,10 +19,10 @@ public class ComputeResultController {
 	private VoteService voteService;
 
 	@RequestMapping(value = "/polls/{pollId}/computeresult", method = RequestMethod.GET)
-	public ResponseEntity<VoteResult> computeResult(@PathVariable Long pollId) {
+	public ResponseEntity<VoteResultResponseDTO> computeResult(@PathVariable Long pollId) {
 
-		VoteResult result = voteService.computeResult(pollId);
-		return new ResponseEntity<VoteResult>(result, HttpStatus.OK);
+		VoteResultResponseDTO result = voteService.computeResult(pollId);
+		return new ResponseEntity<VoteResultResponseDTO>(result, HttpStatus.OK);
 
 	}
 

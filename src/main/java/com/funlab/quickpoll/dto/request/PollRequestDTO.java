@@ -1,4 +1,4 @@
-package com.funlab.quickpoll.dto;
+package com.funlab.quickpoll.dto.request;
 
 import java.util.Set;
 
@@ -12,13 +12,13 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class PollDTO {
+public class PollRequestDTO {
 
 	@NotEmpty
 	@NotNull
 	private String question;
 
 	@Size(min = 2, max = 5)
-	private Set<OptionDTO> options;
+	private Set<OptionRequestDTO> options;
 
 }
