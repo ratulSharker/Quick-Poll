@@ -2,7 +2,7 @@ package com.funlab.quickpoll.service;
 
 import java.util.Optional;
 
-import com.funlab.quickpoll.domain.Poll;
+import com.funlab.quickpoll.entity.Poll;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

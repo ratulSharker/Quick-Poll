@@ -1,4 +1,4 @@
-package com.funlab.quickpoll.domain;
+package com.funlab.quickpoll.entity;
 
 import java.util.Set;
 

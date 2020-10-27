@@ -2,7 +2,7 @@ package com.funlab.quickpoll.controller.v1;
 
 import java.net.URI;
 
-import com.funlab.quickpoll.domain.Vote;
+import com.funlab.quickpoll.entity.Vote;
 import com.funlab.quickpoll.service.VoteService;
 
 import org.springframework.beans.factory.annotation.Autowired;

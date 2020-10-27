@@ -10,6 +10,6 @@ import lombok.Setter;
 public class VoteResult {
 
 	private Long totalVotes;
-	private Collection<OptionCount> result;
+	private Collection<VoteCount> result;
 
 }

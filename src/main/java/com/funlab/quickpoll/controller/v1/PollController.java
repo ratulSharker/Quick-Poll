@@ -12,11 +12,11 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
-import com.funlab.quickpoll.domain.Option;
-import com.funlab.quickpoll.domain.Poll;
 import com.funlab.quickpoll.dto.CustomApiResponse;
 import com.funlab.quickpoll.dto.OptionDTO;
 import com.funlab.quickpoll.dto.PollDTO;
+import com.funlab.quickpoll.entity.Option;
+import com.funlab.quickpoll.entity.Poll;
 import com.funlab.quickpoll.exception.ResourceNotFoundException;
 import com.funlab.quickpoll.service.PollService;
 
