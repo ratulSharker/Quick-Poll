@@ -12,6 +12,7 @@ import com.funlab.quickpoll.domain.User;
 
 public class QuickPollUserDetails implements UserDetails {
 
+	private static final long serialVersionUID = 1L;
 	private User user;
 
 	public QuickPollUserDetails(User user) {
