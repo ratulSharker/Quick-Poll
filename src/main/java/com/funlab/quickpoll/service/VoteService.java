@@ -1,6 +1,6 @@
 package com.funlab.quickpoll.service;
 
-import com.funlab.quickpoll.domain.Vote;
+import com.funlab.quickpoll.entity.Vote;
 
 public interface VoteService {
     

@@ -1,6 +1,6 @@
 package com.funlab.quickpoll.service.impl;
 
-import com.funlab.quickpoll.domain.Vote;
+import com.funlab.quickpoll.entity.Vote;
 import com.funlab.quickpoll.repositoy.VoteRepository;
 import com.funlab.quickpoll.service.VoteService;
 

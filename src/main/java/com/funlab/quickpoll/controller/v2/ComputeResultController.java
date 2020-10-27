@@ -2,9 +2,9 @@ package com.funlab.quickpoll.controller.v2;
 
 import java.util.HashMap;
 
-import com.funlab.quickpoll.domain.Vote;
 import com.funlab.quickpoll.dto.OptionCount;
 import com.funlab.quickpoll.dto.VoteResult;
+import com.funlab.quickpoll.entity.Vote;
 import com.funlab.quickpoll.service.VoteService;
 
 import org.springframework.beans.factory.annotation.Autowired;

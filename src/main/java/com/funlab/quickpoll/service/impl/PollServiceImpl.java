@@ -2,7 +2,7 @@ package com.funlab.quickpoll.service.impl;
 
 import java.util.Optional;
 
-import com.funlab.quickpoll.domain.Poll;
+import com.funlab.quickpoll.entity.Poll;
 import com.funlab.quickpoll.repositoy.PollRepository;
 import com.funlab.quickpoll.service.PollService;
 
