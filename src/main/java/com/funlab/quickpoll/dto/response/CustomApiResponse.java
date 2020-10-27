@@ -1,4 +1,4 @@
-package com.funlab.quickpoll.dto;
+package com.funlab.quickpoll.dto.response;
 
 import java.util.Map;
 
