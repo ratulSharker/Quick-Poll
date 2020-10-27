@@ -1,10 +1,14 @@
 package com.funlab.quickpoll.controller.v2;
 
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 
+import com.funlab.quickpoll.dto.response.VoteResponseDTO;
 import com.funlab.quickpoll.entity.Vote;
 import com.funlab.quickpoll.service.VoteService;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -23,6 +27,9 @@ public class VoteController {
 	@Autowired
 	private VoteService voteService;
 
+	@Autowired
+	private ModelMapper modelMapper;
+
 	@RequestMapping(value = "/polls/{pollId}/votes", method = RequestMethod.POST)
 	public ResponseEntity<Vote> createVote(@RequestBody Vote vote, @PathVariable Long pollId) {
 		vote = voteService.save(vote);
@@ -37,11 +44,15 @@ public class VoteController {
 	}
 
 	@RequestMapping(value = "/polls/{pollId}/votes", method = RequestMethod.GET)
-	public ResponseEntity<Iterable<Vote>> getVotesForPoll(@PathVariable Long pollId) {
+	public ResponseEntity<Iterable<VoteResponseDTO>> getVotesForPoll(@PathVariable Long pollId) {
 
 		Iterable<Vote> votes = voteService.findByPoll(pollId);
+		List<VoteResponseDTO> voteDtos = new ArrayList<VoteResponseDTO>();
+		votes.forEach(vote -> {
+			voteDtos.add(modelMapper.map(vote, VoteResponseDTO.class));
+		});
 
-		return new ResponseEntity<Iterable<Vote>>(votes, HttpStatus.OK);
+		return new ResponseEntity<Iterable<VoteResponseDTO>>(voteDtos, HttpStatus.OK);
 	}
 
 }

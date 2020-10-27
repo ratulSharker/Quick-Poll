@@ -1,6 +1,6 @@
 package com.funlab.quickpoll.controller.v1;
 
-import java.lang.reflect.Type;
+
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Date;

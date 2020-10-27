@@ -15,11 +15,14 @@ import javax.validation.Valid;
 import com.funlab.quickpoll.dto.request.OptionRequestDTO;
 import com.funlab.quickpoll.dto.request.PollRequestDTO;
 import com.funlab.quickpoll.dto.response.CustomApiResponse;
+import com.funlab.quickpoll.dto.response.PageResponseDTO;
+import com.funlab.quickpoll.dto.response.PollResponseDTO;
 import com.funlab.quickpoll.entity.Option;
 import com.funlab.quickpoll.entity.Poll;
 import com.funlab.quickpoll.exception.ResourceNotFoundException;
 import com.funlab.quickpoll.service.PollService;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
@@ -52,18 +55,25 @@ public class PollController {
 	@Autowired
 	private MessageSource messageSource;
 
+	@Autowired
+	private ModelMapper modelMapper;
+
 	@ApiOperation(value = "Get all available polls")
 	@ApiResponses(value = { 
-			@ApiResponse(code = 200, message = "Polls fetched", response = Poll.class)
+			@ApiResponse(code = 200, message = "Polls fetched", response = PollResponseDTO.class)
 	})
 	@RequestMapping(value = "/polls", method = RequestMethod.GET)
-	public ResponseEntity<Page<Poll>> getAllPolls(Pageable pageable) { 
-		return new ResponseEntity<Page<Poll>>(pollService.findAll(pageable), HttpStatus.OK);
+	public ResponseEntity<PageResponseDTO<PollResponseDTO>> getAllPolls(Pageable pageable) {
+		Page<Poll> pollPage = pollService.findAll(pageable);
+
+		PageResponseDTO<PollResponseDTO> pollPageDto = modelMapper.map(pollPage, PageResponseDTO.class);
+
+		return new ResponseEntity<PageResponseDTO<PollResponseDTO>>(pollPageDto, HttpStatus.OK);
 	}
 
-	@ApiOperation(value = "Create a new poll", notes = "It will return the newly created poll and set the response header location to newly created poll", response = Poll.class)
+	@ApiOperation(value = "Create a new poll", notes = "It will return the newly created poll and set the response header location to newly created poll", response = PollResponseDTO.class)
 	@RequestMapping(value = "/polls", method = RequestMethod.POST)
-	public ResponseEntity<CustomApiResponse<Poll>> createPoll(@Valid @RequestBody PollRequestDTO pollDTO, HttpServletRequest req) {
+	public ResponseEntity<CustomApiResponse<PollResponseDTO>> createPoll(@Valid @RequestBody PollRequestDTO pollDTO, HttpServletRequest req) {
 		
 		Poll poll = new Poll();
 		poll.setQuestion(pollDTO.getQuestion());
@@ -83,8 +93,8 @@ public class PollController {
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(poll.getId()).toUri();
 		responseHeaders.setLocation(uri);
 
-		CustomApiResponse<Poll> response = new CustomApiResponse<Poll>();
-		response.setData(poll);
+		CustomApiResponse<PollResponseDTO> response = new CustomApiResponse<PollResponseDTO>();
+		response.setData(modelMapper.map(poll, PollResponseDTO.class));
 
 		Map<String, Object> meta = new HashMap<String, Object>();
 		meta.put("timestamp", new Date().getTime());
@@ -93,18 +103,18 @@ public class PollController {
 
 
 
-		return new ResponseEntity<CustomApiResponse<Poll> >(response, responseHeaders, HttpStatus.CREATED);
+		return new ResponseEntity<CustomApiResponse<PollResponseDTO> >(response, responseHeaders, HttpStatus.CREATED);
 	}
 
 	
-	@ApiOperation(value = "Get poll by id", response = Poll.class)
+	@ApiOperation(value = "Get poll by id", response = PollResponseDTO.class)
 	@RequestMapping(value = "/polls/{id}", method = RequestMethod.GET)
 	public ResponseEntity<CustomApiResponse<?>> getPoll(@PathVariable("id") Long pollId, HttpServletRequest req) {
 		Poll poll = verifyAndGetPoll(pollId);
 
-		CustomApiResponse<Poll> response = new CustomApiResponse<Poll>();
+		CustomApiResponse<PollResponseDTO> response = new CustomApiResponse<PollResponseDTO>();
 
-		response.setData(poll);
+		response.setData(modelMapper.map(poll, PollResponseDTO.class));
 
 		Map<String, Object> meta = new HashMap<>();
 		meta.put("timestamp", new Date().getTime());
@@ -115,7 +125,7 @@ public class PollController {
 	}
 
 	
-	@ApiOperation(value = "Update a particular poll", response = Poll.class)
+	@ApiOperation(value = "Update a particular poll", response = PollResponseDTO.class)
 	@RequestMapping(value = "/polls/{id}", method = RequestMethod.PUT)
 	public ResponseEntity<Poll> updatePoll(@PathVariable("id") Long pollId, @RequestBody Poll poll) {
 		verifyAndGetPoll(pollId);
